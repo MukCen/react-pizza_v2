@@ -1,14 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./scss/libs/app.scss";
 import Header from "./cmponents/Header";
 import Categories from "./cmponents/Categories";
 import Sort from "./cmponents/Sort";
-import PizzaBlock from "./cmponents/PizzaBlock";
-import pizass from "./assets/db.json";
+import PizzaBlock from "./cmponents/PizzaBlock/index";
+import { Skeleton } from "./cmponents/PizzaBlock/Skeleton";
+// import pizzas from "./assets/db.json";
 
-console.log(pizass);
+// console.log(pizass);
+// https://657c2de4853beeefdb98d6e9.mockapi.io/items      --дані  з МокАПІ
+// https://mockapi.io/projects/657c2de4853beeefdb98d6ea
 
 function App() {
+  const [pizzas, setItems] = useState([]);
+  const [isloading, setLoudet] = useState(true);
+
+  useEffect(() => {
+    // setLoudet(true);
+    fetch(" https://657c2de4853beeefdb98d6e9.mockapi.io/items")
+      .then((res) => res.json())
+      .then((data) => {
+        setItems(data);
+        setLoudet(false);
+      });
+  }, []);
   return (
     <div className='wrapper'>
       <Header />
@@ -22,16 +37,14 @@ function App() {
       </div>
       <h2 className='content__title'>Все пиццы</h2>
       <div className='content__items'>
-        {pizass.map((obj, i) => (
-          <PizzaBlock
-            title={obj.title}
-            price={obj.price}
-            image={obj.imageUrl}
-            sizes={obj.sizes}
-            types={obj.types}
-            key={i}
-          />
-        ))}
+        {isloading
+          ? [...new Array(6)].map((_, id) => <Skeleton key={id} />)
+          : pizzas.map((obj, i) => (
+              <PizzaBlock
+                {...obj}
+                key={i}
+              />
+            ))}
       </div>
     </div>
   );

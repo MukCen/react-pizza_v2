@@ -6,7 +6,7 @@ function Sort() {
   const [visiblePopap, setVisiblePopap] = useState(false);
   const [popapAcktive, setPopapAcktive] = useState(0);
 
-  const sortPopaps = ["популярности", "цене", "алфавиту"];
+  const sortPopaps = ["популярності", "ціні", "алфавіту"];
 
   const handlePopapAcktive = (ind) => {
     setPopapAcktive(ind);
@@ -46,7 +46,7 @@ function Sort() {
             fill='#2C2C2C'
           />
         </svg>
-        <b>Сортировка по:</b>
+        <b>Сортування по:</b>
         <span onClick={() => setVisiblePopap(!visiblePopap)}>
           {sortPopaps[popapAcktive]}
         </span>
