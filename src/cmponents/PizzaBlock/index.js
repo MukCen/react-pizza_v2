@@ -4,8 +4,8 @@ import { useState } from "react";
 function PizzaBlock({ title, price, imageUrl, sizes, types }) {
   const [count, setCount] = React.useState(0);
   const onClickButon = () => setCount(count + 1);
-  console.log("render", count);
-  console.log(title, sizes, types);
+  // console.log("render", count);
+  // console.log(title, sizes, types);
 
   // 1
   const [indexSize, setIndexsiese] = useState(0);

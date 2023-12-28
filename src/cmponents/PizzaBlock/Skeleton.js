@@ -1,6 +1,7 @@
 import React from "react";
 import ContentLoader from "react-content-loader";
 
+// https://skeletonreact.com/
 export const Skeleton = () => (
   <ContentLoader
     className='pizza-block'

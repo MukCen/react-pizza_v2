@@ -1,15 +1,21 @@
 import { useEffect, useRef, useState } from "react";
 
-function Sort() {
+function Sort({ value, onChengPopap }) {
   const sortRef = useRef(null);
   console.log(sortRef);
   const [visiblePopap, setVisiblePopap] = useState(false);
-  const [popapAcktive, setPopapAcktive] = useState(0);
 
-  const sortPopaps = ["популярності", "ціні", "алфавіту"];
+  const sortPopaps = [
+    { name: "популярності", sortProperty: "rating", sort: "desc" },
+    { name: "популярності", sortProperty: "rating", sort: "asc" },
+    { name: "ціні", sortProperty: "price", sort: "desc" },
+    { name: "ціні", sortProperty: "price", sort: "asc" },
+    { name: "алфавіту", sortProperty: "title", sort: "desc" },
+    { name: "алфавіту", sortProperty: "title", sort: "asc" },
+  ];
 
-  const handlePopapAcktive = (ind) => {
-    setPopapAcktive(ind);
+  const handlePopapAcktive = (popap) => {
+    onChengPopap(popap);
     setVisiblePopap(false);
   };
 
@@ -48,18 +54,18 @@ function Sort() {
         </svg>
         <b>Сортування по:</b>
         <span onClick={() => setVisiblePopap(!visiblePopap)}>
-          {sortPopaps[popapAcktive]}
+          {value.name + " " + value.sort}
         </span>
       </div>
       {visiblePopap ? (
         <div className='sort__popup'>
           <ul>
-            {sortPopaps.map((popapName, i) => (
+            {sortPopaps.map((popap, i) => (
               <li
                 key={i}
-                onClick={() => handlePopapAcktive(i)}
-                className={popapAcktive === i ? "active" : ""}>
-                {popapName}
+                onClick={() => handlePopapAcktive(popap)}
+                className={value.name === popap.name ? "active" : ""}>
+                {popap.name + " " + popap.sort}
               </li>
             ))}
           </ul>
