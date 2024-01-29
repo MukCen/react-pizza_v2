@@ -1,0 +1,53 @@
+[33mcommit 04aeb886c69798e6e9987e157df06c1b27bc6551[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Author: MukCen <mukola_1973@ukr.net>
+Date:   Thu Dec 28 18:56:17 2023 +0200
+
+    Url Category & SortPopap
+
+[33mcommit d7c418c80217ca3da90f6f2110c4c11b6d407a7c[m
+Author: MukCen <mukola_1973@ukr.net>
+Date:   Mon Dec 18 21:30:52 2023 +0200
+
+    Router
+
+[33mcommit cf215b271c3f268f0674966dec541ac319886715[m
+Author: MukCen <mukola_1973@ukr.net>
+Date:   Fri Dec 15 23:18:54 2023 +0200
+
+    Seleton isLoading
+
+[33mcommit a7f81ca45c44b71a2f7fef6f4cc6705e5e6c33be[m[33m ([m[1;31morigin/master[m[33m)[m
+Author: MukCen <mukola_1973@ukr.net>
+Date:   Fri Dec 15 13:26:36 2023 +0200
+
+    mockapi  &  fetch
+
+[33mcommit 7f100b14e3b8170b686211199893dbfb6ba535f2[m
+Author: MukCen <mukola_1973@ukr.net>
+Date:   Thu Dec 14 20:06:05 2023 +0200
+
+    Sort Popup
+
+[33mcommit a6c6568a6ccbaf743367891603e38f9602bbc9d1[m
+Author: MukCen <mukola_1973@ukr.net>
+Date:   Thu Dec 14 11:24:28 2023 +0200
+
+    RenderProps Categories PizzaBlock
+
+[33mcommit deb080eaa077de4ece879f48d6301f2893234dc4[m
+Author: MukCen <mukola_1973@ukr.net>
+Date:   Tue Dec 12 21:37:26 2023 +0200
+
+    Components
+
+[33mcommit 6cc57ceda036ebe8918655808b21600e56d6bca4[m
+Author: MukCen <mukola_1973@ukr.net>
+Date:   Tue Dec 12 12:43:11 2023 +0200
+
+    Fonts, sass and scss file
+
+[33mcommit 3d77cd29c0d0cf77a6fba941ecb3ade256fc87cf[m
+Author: MukCen <mukola_1973@ukr.net>
+Date:   Mon Dec 11 15:05:10 2023 +0200
+
+    Initialize project using Create React App

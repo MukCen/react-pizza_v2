@@ -11,7 +11,7 @@ import { Skeleton } from "../../cmponents/PizzaBlock/Skeleton";
 // https://mockapi.io/projects/657c2de4853beeefdb98d6ea
 
 // rsf
-function HomePage() {
+function HomePage({ searchValue }) {
   const [pizzas, setItems] = useState([]);
   const [isloading, setLoudet] = useState(true);
 
@@ -22,19 +22,24 @@ function HomePage() {
     sort: "desc",
   });
   // const category = activeCategori !== 0 ? `category=${activeCategori}` : "";
+
+  // const search = searchValue ? `&search=${searchValue}` : "";
+
   useEffect(() => {
     setLoudet(true);
     fetch(
       ` https://657c2de4853beeefdb98d6e9.mockapi.io/items?${
         activeCategori !== 0 ? `category=${activeCategori}` : ""
-      }&sortBy=${popapAcktive.sortProperty}&order=${popapAcktive.sort}}`
+      }&sortBy=${popapAcktive.sortProperty}&order=${popapAcktive.sort}${
+        searchValue ? `&search=${searchValue}` : ""
+      }`
     )
       .then((res) => res.json())
       .then((data) => {
         setItems(data);
         setLoudet(false);
       });
-  }, [activeCategori, popapAcktive]);
+  }, [activeCategori, popapAcktive, searchValue]);
 
   return (
     <>
@@ -53,10 +58,11 @@ function HomePage() {
       <div className='content__items'>
         {isloading
           ? [...new Array(6)].map((_, id) => <Skeleton key={id} />)
-          : pizzas.map((obj, i) => (
+          : Array.isArray(pizzas) &&
+            pizzas.map((obj) => (
               <PizzaBlock
                 {...obj}
-                key={i}
+                key={obj.key}
               />
             ))}
       </div>

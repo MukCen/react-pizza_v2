@@ -6,12 +6,12 @@ function Sort({ value, onChengPopap }) {
   const [visiblePopap, setVisiblePopap] = useState(false);
 
   const sortPopaps = [
-    { name: "популярності", sortProperty: "rating", sort: "desc" },
-    { name: "популярності", sortProperty: "rating", sort: "asc" },
-    { name: "ціні", sortProperty: "price", sort: "desc" },
-    { name: "ціні", sortProperty: "price", sort: "asc" },
-    { name: "алфавіту", sortProperty: "title", sort: "desc" },
-    { name: "алфавіту", sortProperty: "title", sort: "asc" },
+    { name: "популярності", sortProperty: "rating desc", sort: "desc" },
+    { name: "популярності", sortProperty: "rating asc", sort: "asc" },
+    { name: "ціні", sortProperty: "price desc", sort: "desc" },
+    { name: "ціні", sortProperty: "price asc", sort: "asc" },
+    { name: "алфавіту", sortProperty: "title desc", sort: "desc" },
+    { name: "алфавіту", sortProperty: "title asc", sort: "asc" },
   ];
 
   const handlePopapAcktive = (popap) => {
@@ -64,7 +64,9 @@ function Sort({ value, onChengPopap }) {
               <li
                 key={i}
                 onClick={() => handlePopapAcktive(popap)}
-                className={value.name === popap.name ? "active" : ""}>
+                className={
+                  value.sortProperty === popap.sortProperty ? "active" : ""
+                }>
                 {popap.name + " " + popap.sort}
               </li>
             ))}
