@@ -4,6 +4,7 @@ import Categories from "../../cmponents/Categories";
 import Sort from "../../cmponents/Sort";
 import PizzaBlock from "../../cmponents/PizzaBlock";
 import { Skeleton } from "../../cmponents/PizzaBlock/Skeleton";
+import Pagination from "../../cmponents/Pagination";
 // import pizzas from "./assets/db.json";
 
 // console.log(pizass);
@@ -13,6 +14,7 @@ import { Skeleton } from "../../cmponents/PizzaBlock/Skeleton";
 // rsf
 function HomePage({ searchValue }) {
   const [pizzas, setItems] = useState([]);
+  const [page, setPage] = useState(0);
   const [isloading, setLoudet] = useState(true);
 
   const [activeCategori, setactiveCategori] = useState(0);
@@ -25,10 +27,11 @@ function HomePage({ searchValue }) {
 
   // const search = searchValue ? `&search=${searchValue}` : "";
 
+  console.log(page);
   useEffect(() => {
     setLoudet(true);
     fetch(
-      ` https://657c2de4853beeefdb98d6e9.mockapi.io/items?${
+      ` https://657c2de4853beeefdb98d6e9.mockapi.io/items?&page=${page}${
         activeCategori !== 0 ? `category=${activeCategori}` : ""
       }&sortBy=${popapAcktive.sortProperty}&order=${popapAcktive.sort}${
         searchValue ? `&search=${searchValue}` : ""
@@ -36,10 +39,22 @@ function HomePage({ searchValue }) {
     )
       .then((res) => res.json())
       .then((data) => {
+        console.log(data);
         setItems(data);
         setLoudet(false);
       });
-  }, [activeCategori, popapAcktive, searchValue]);
+  }, [activeCategori, popapAcktive, searchValue, page]);
+
+  // Invoke when user click to request another page.
+  // const handlePageClick = (event) => {
+  //   const newOffset = (event.selected * itemsPerPage) % items.length;
+  //   console.log(
+  //     `User requested page number ${event.selected}, which is offset ${newOffset}`
+  //   );
+  //   setItemOffset(newOffset);
+  // };
+
+  ///////
 
   return (
     <>
@@ -66,6 +81,7 @@ function HomePage({ searchValue }) {
               />
             ))}
       </div>
+      <Pagination onChengPage={setPage} />
     </>
   );
 }
