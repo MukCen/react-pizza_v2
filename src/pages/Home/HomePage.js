@@ -2,8 +2,8 @@ import React from "react";
 import { useEffect, useState } from "react";
 import Categories from "../../cmponents/Categories";
 import Sort from "../../cmponents/Sort";
-import PizzaBlock from "../../cmponents/PizzaBlock";
-import { Skeleton } from "../../cmponents/PizzaBlock/Skeleton";
+import PizzaBlock from "../../cmponents/PizzaBlock/PizzaBlock";
+import { Skeleton } from "../../cmponents/Skeleton";
 import Pagination from "../../cmponents/Pagination";
 // import pizzas from "./assets/db.json";
 
@@ -81,7 +81,10 @@ function HomePage({ searchValue }) {
               />
             ))}
       </div>
-      <Pagination onChengPage={setPage} />
+      <Pagination
+        onChengPage={setPage}
+        page={page}
+      />
     </>
   );
 }

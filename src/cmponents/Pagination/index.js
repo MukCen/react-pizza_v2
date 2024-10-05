@@ -12,9 +12,10 @@ import styles from "./Pagination.module.scss";
 //   setItemOffset(newOffset);
 // };
 ///////
-const Pagination = ({ onChengPage }) => {
+const Pagination = ({ page, onChengPage }) => {
   const handlePageClick = (event) => {
     const newOffset = event.selected;
+    // className={newOffset page ===  ? "active" : ""};
     onChengPage(newOffset);
     console.log(
       `User requested page number ${event.selected}, which is offset ${newOffset}`
@@ -30,6 +31,9 @@ const Pagination = ({ onChengPage }) => {
       pageCount={7}
       previousLabel='<'
       renderOnZeroPageCount={null}
+      forcePage={page} // Пропс для відображення активної сторінки
+      activeClassName={styles.active} // Додаємо клас активної сторінки
+      // pageClassName={(pageNum) => (pageNum === page ? styles.active : "")} // Логіка для класу "active"
     />
   );
 };
