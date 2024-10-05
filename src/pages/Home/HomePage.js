@@ -12,7 +12,7 @@ import Pagination from "../../cmponents/Pagination";
 // https://mockapi.io/projects/657c2de4853beeefdb98d6ea
 
 // rsf
-function HomePage({ searchValue }) {
+function HomePage({ searchValue, setCount }) {
   const [pizzas, setItems] = useState([]);
   const [page, setPage] = useState(0);
   const [isloading, setLoudet] = useState(true);
@@ -78,6 +78,7 @@ function HomePage({ searchValue }) {
               <PizzaBlock
                 {...obj}
                 key={obj.key}
+                onSetButon={setCount}
               />
             ))}
       </div>

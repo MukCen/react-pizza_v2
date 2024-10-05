@@ -1,9 +1,9 @@
 import React from "react";
 import { useState } from "react";
 
-function PizzaBlock({ title, price, imageUrl, sizes, types }) {
+function PizzaBlock({ title, price, imageUrl, sizes, types, onSetButon }) {
   const [count, setCount] = React.useState(0);
-  const onClickButon = () => setCount(count + 1);
+  // const onSetButon = () => setCount(count + 1);
   // console.log("render", count);
   // console.log(title, sizes, types);
 
@@ -12,6 +12,7 @@ function PizzaBlock({ title, price, imageUrl, sizes, types }) {
   // 2
   const [typeIndex, setTypeIndex] = useState(0);
   const typeNames = ["тонка", "традиційна"];
+
   // const typeNames = [
   //   { type: types[0], name: "тонкое" },
   //   { type: types[1], name: "традиционное" },
@@ -41,7 +42,7 @@ function PizzaBlock({ title, price, imageUrl, sizes, types }) {
         <ul>
           {sizes.map((size, i) => (
             <li
-              key={size}
+              key={i}
               className={indexSize === i ? "active" : ""}
               onClick={() => setIndexsiese(i)}>
               {size} см
@@ -53,7 +54,7 @@ function PizzaBlock({ title, price, imageUrl, sizes, types }) {
         <div className='pizza-block__price'> {price} грн</div>
         <button
           className='button button--outline button--add'
-          onClick={onClickButon}>
+          onClick={() => onSetButon(setCount(count + 1))}>
           <svg
             width='12'
             height='12'
@@ -65,10 +66,9 @@ function PizzaBlock({ title, price, imageUrl, sizes, types }) {
               fill='white'
             />
           </svg>
-          <span>Додати</span>
+          <span> Додати</span>
           <i>{count}</i>
         </button>
-        s
       </div>
     </div>
   );

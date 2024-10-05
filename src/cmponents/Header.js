@@ -2,7 +2,7 @@ import logoSvg from "../assets/img/pizza-logo.svg";
 import { Link } from "react-router-dom";
 import { Search } from "./Search";
 
-function Header({ searchValue, setSearchValue }) {
+function Header({ searchValue, setSearchValue, count }) {
   return (
     <div className='header'>
       <div className='container'>
@@ -58,7 +58,7 @@ function Header({ searchValue, setSearchValue }) {
                 strokeLinejoin='round'
               />
             </svg>
-            <span>3</span>
+            <span>{count}</span>
           </Link>
         </div>
       </div>

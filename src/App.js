@@ -10,6 +10,8 @@ import { useState } from "react";
 // https://skeletonreact.com/
 function App() {
   const [searchValue, setSearchValue] = useState("");
+  const [count, setCount] = React.useState(0);
+  const onClickButon = () => setCount(count + 1);
   // const setSearchValuInput = (str) => setsearchValue(str);
 
   return (
@@ -17,13 +19,19 @@ function App() {
       <Header
         searchValue={searchValue}
         setSearchValue={setSearchValue}
+        count={count}
       />
       <div className='content'>
         <div className='container'>
           <Routes>
             <Route
               path='/'
-              element={<HomePage searchValue={searchValue} />}
+              element={
+                <HomePage
+                  searchValue={searchValue}
+                  setCount={onClickButon}
+                />
+              }
             />
 
             <Route
