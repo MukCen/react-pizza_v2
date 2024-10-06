@@ -2,7 +2,7 @@ import logoSvg from "../assets/img/pizza-logo.svg";
 import { Link } from "react-router-dom";
 import { Search } from "./Search";
 
-function Header({ searchValue, setSearchValue, count }) {
+function Header({ searchValue, setSearchValue, count, sum }) {
   return (
     <div className='header'>
       <div className='container'>
@@ -28,7 +28,7 @@ function Header({ searchValue, setSearchValue, count }) {
             to={"/cart"}
             // href='/cart.html'
             className='button button--cart'>
-            <span>520 ₽</span>
+            <span>{sum} грн</span>
             <div className='button__delimiter'></div>
             <svg
               width='18'

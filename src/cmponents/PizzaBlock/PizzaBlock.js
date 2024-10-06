@@ -54,7 +54,12 @@ function PizzaBlock({ title, price, imageUrl, sizes, types, onSetButon }) {
         <div className='pizza-block__price'> {price} грн</div>
         <button
           className='button button--outline button--add'
-          onClick={() => onSetButon(setCount(count + 1))}>
+          onClick={() => {
+            setCount(count + 1);
+            onSetButon(price);
+          }}
+          // onAdSum={() => onSetButon(setCount(count + 1))}
+        >
           <svg
             width='12'
             height='12'

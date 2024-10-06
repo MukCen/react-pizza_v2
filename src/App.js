@@ -10,8 +10,22 @@ import { useState } from "react";
 // https://skeletonreact.com/
 function App() {
   const [searchValue, setSearchValue] = useState("");
-  const [count, setCount] = React.useState(0);
-  const onClickButon = () => setCount(count + 1);
+  const [prevState, setCountAndSum] = React.useState({ count: 0, sum: 0 });
+  const onClickButon = (price) => {
+    setCountAndSum((prevState) => ({
+      count: prevState.count + 1,
+      sum: prevState.sum + price,
+    }));
+  };
+  // const [{count, sum}, setCountAndSum] = React.useState({ count: 0, sum: 0 });
+  // const onClickButon = (price) => {
+  //   setCountAndSum((prevState) => ({
+  //     // setCount(...prevState, count + 1, ...prevState, (sum = +price));
+  //     count: prevState.count + 1,
+  //     sum: prevState.sum + price,
+  //   }));
+  // };
+
   // const setSearchValuInput = (str) => setsearchValue(str);
 
   return (
@@ -19,7 +33,8 @@ function App() {
       <Header
         searchValue={searchValue}
         setSearchValue={setSearchValue}
-        count={count}
+        count={prevState.count}
+        sum={prevState.sum}
       />
       <div className='content'>
         <div className='container'>
