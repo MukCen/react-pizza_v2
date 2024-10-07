@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 
 function PizzaBlock({ title, price, imageUrl, sizes, types, onSetButon }) {
+  // 3
   const [count, setCount] = React.useState(0);
   // const onSetButon = () => setCount(count + 1);
   // console.log("render", count);
@@ -17,6 +18,15 @@ function PizzaBlock({ title, price, imageUrl, sizes, types, onSetButon }) {
   //   { type: types[0], name: "тонкое" },
   //   { type: types[1], name: "традиционное" },
   // ];
+  // 4 rating
+  // Рейтинг у вигляді зірочок
+  const totalStars = 5; // Максимальна кількість зірочок
+  const [userRating, setUserRating] = useState(0); // Стан для рейтингу
+
+  // Можливість вибору рейтингу користувачем
+  const handleRating = (newRating) => {
+    setUserRating(newRating); // Встановити новий рейтинг
+  };
 
   return (
     <div className='pizza-block'>
@@ -26,6 +36,26 @@ function PizzaBlock({ title, price, imageUrl, sizes, types, onSetButon }) {
         alt='Pizza'
       />
       <h4 className='pizza-block__title'>{title}</h4>
+      {/* Секція для рейтингу */}
+      <div className='pizza-block__rating'>
+        {[...Array(totalStars)].map((_, index) => {
+          const starIndex = index + 1;
+          return (
+            <svg
+              key={index}
+              onClick={() => handleRating(starIndex)} // Якщо хочете, щоб рейтинг оновлювався при кліку
+              className={starIndex <= userRating ? "active" : ""}
+              width='20'
+              height='20'
+              viewBox='0 0 24 24'
+              fill={starIndex <= userRating ? "gold" : "gray"}
+              xmlns='http://www.w3.org/2000/svg'
+              style={{ cursor: "pointer", marginRight: "5px" }}>
+              <path d='M12 .587l3.668 7.426L24 9.75l-6 5.844L19.336 24 12 20.245 4.664 24 6 15.594 0 9.75l8.332-1.737L12 .587z' />
+            </svg>
+          );
+        })}
+      </div>
       <div className='pizza-block__selector'>
         <ul>
           {types.map((typeId) => (
