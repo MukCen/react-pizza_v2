@@ -23,27 +23,45 @@ function HomePage({ searchValue, setCount }) {
     sortProperty: "rating",
     sort: "desc",
   });
-  // const category = activeCategori !== 0 ? `category=${activeCategori}` : "";
-
-  // const search = searchValue ? `&search=${searchValue}` : "";
-
+  const category = activeCategori !== 0 ? `&category=${activeCategori}` : "";
+  const search = searchValue ? `&search=${searchValue}` : "";
   console.log(page);
+
   useEffect(() => {
     setLoudet(true);
     fetch(
-      ` https://657c2de4853beeefdb98d6e9.mockapi.io/items?&page=${page}${
-        activeCategori !== 0 ? `category=${activeCategori}` : ""
-      }&sortBy=${popapAcktive.sortProperty}&order=${popapAcktive.sort}${
-        searchValue ? `&search=${searchValue}` : ""
-      }`
+      `http://localhost:5000/api/pizzas?page=${page}${category}&sort=${popapAcktive.sortProperty}&order=${popapAcktive.sort}${search}`
     )
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         setItems(data);
         setLoudet(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching pizzas:", err);
+        setLoudet(false);
       });
-  }, [activeCategori, popapAcktive, searchValue, page]);
+  }, [category, popapAcktive, search, page]);
+
+  // useEffect(() => {
+  //   setLoudet(true);
+  //   fetch(`http://localhost:5000/api/pizzas?page=${page}${category}
+  //     &sort=${popapAcktive.sortProperty}&order=${popapAcktive.sort}${
+
+  //       searchValue ? `&search=${searchValue}` : ""
+  //     }`)
+  // ` https://657c2de4853beeefdb98d6e9.mockapi.io/items?&page=${page}${
+  //   activeCategori !== 0 ? `category=${activeCategori}` : ""
+  // }&sortBy=${popapAcktive.sortProperty}&order=${popapAcktive.sort}${
+  // searchValue ? `&search=${searchValue}` : ""
+  // }`
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       console.log(data);
+  //       setItems(data);
+  //       setLoudet(false);
+  //     });
+  // }, [activeCategori, popapAcktive, searchValue, page, category]);
 
   // Invoke when user click to request another page.
   // const handlePageClick = (event) => {
