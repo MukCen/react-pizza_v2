@@ -114,14 +114,30 @@ app.get("/api/pizzas", async (req, res) => {
           JSON.stringify(pizza.types || []),
         ]);
 
-        db.query(insertQuery, [pizzaData], (err, res) => {
+        // 1
+        // db.query(insertQuery, [pizzaData], (err, res) => {
+        //   if (err) {
+        //     console.error("MySQL Error during insert:", err);
+        //     return res
+        //       .status(500)
+        //       .json({ message: "Error inserting pizzas into DB" });
+        //   }
+        //   return res.json(pizzas);
+        // 2
+        db.query(insertQuery, [pizzaData], (err, result) => {
+          // Змінено 'res' на 'result'
           if (err) {
             console.error("MySQL Error during insert:", err);
             return res
               .status(500)
               .json({ message: "Error inserting pizzas into DB" });
           }
-          return res.json(pizzas);
+
+          // Повертаємо введену піцу або дані, які вам потрібні
+          return res.json({
+            message: "Pizza inserted successfully",
+            data: pizzaData,
+          });
         });
       } else {
         // 1
@@ -253,3 +269,46 @@ app.listen(PORT, () => {
 // аргументів у вашому масиві queryParams, що призвело до того, що він не може обробити їх.
 // "Аргумент типа 'string' нельзя назначить параметру типа 'never'": Це вказує на те, що TypeScript не знає, якого
 // типу дані передаються в м
+
+// я маю  db.query(insertQuery, [pizzaData], (err, res) => {
+//   if (err) {
+//     console.error("MySQL Error during insert:", err);
+//     return res
+//       .status(500)
+//       .json({ message: "Error inserting pizzas into DB" });
+//   }
+//   return res.json(pizzas);
+// Програма ChatGPT сказала:
+// ChatGPT
+// У вашому коді ви намагаєтеся використати res у контексті, де він вже був використаний для обробки запиту. Це призводить до конфлікту, оскільки res всередині колбеку db.query знову визначається як параметр. Вам потрібно дати іншому імені (наприклад, result) тому, що передається у колбеку запиту до бази даних.
+
+// Ось як можна це виправити:
+
+// Виправлений код
+//
+// Копіювати код
+// db.query(insertQuery, [pizzaData], (err, result) => { // Змінено 'res' на 'result'
+// if (err) {
+// console.error("MySQL Error during insert:", err);
+// return res.status(500).json({ message: "Error inserting pizzas into DB" });
+// }
+
+// // Повертаємо введену піцу або дані, які вам потрібні
+// return res.json({ message: "Pizza inserted successfully", data: pizzaData });
+// });
+// Основні зміни
+// Зміна параметра колбеку: Я змінив другий параметр у колбеку з res на result,
+//  щоб уникнути
+// плутанини з об'єктом відповіді Express.
+
+// Повернення результату: Я змінив повернення результату на
+// JSON-об'єкт, який містить повідомлення про успіх і дані, які були
+//  вставлені (або інші дані, які вам потрібні).
+
+// Пояснення
+// Конфлікт з іменами: Ваша оригінальна версія викликала помилку, оскільки ви н
+// амагалися використовувати res як параметр в обробнику запиту до бази даних.
+// Це призводить до конфлікту з об'єктом відповіді Express, що викликало помилку.
+
+// Відповідь після вставки: Це важливо, щоб правильно обробити успішну вставку,
+// повертаючи коректну відповідь на запит клієнта.
