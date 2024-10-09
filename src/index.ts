@@ -1,46 +1,14 @@
-// 1 варіант
-// Щоб створити бекенд на **Node.js** для вашої програми, яка буде працювати з базою даних **MySQL** і отримувати часткові дані з іншого API, ми можемо розділити задачу на наступні етапи:
-
-// 1. **Node.js + Express для створення API**.
-// 2. **MySQL** для зберігання і часткового заповнення даних.
-// 3. **Запит до зовнішнього API** для отримання додаткових даних про піци.
-// 4. **Робота з базою даних** через MySQL (або Sequelize для ORM).
-// 5. **Інтеграція з фронтендом** (React).
-
-// ### Крок 1: Налаштування Node.js сервера
-
-// #### 1.1. Встановлення Node.js і створення проекту
-// Створіть новий проект Node.js:
-
-// mkdir pizza-backend
-// cd pizza-backend
-// npm init -y
-// ```
-
-// Додайте необхідні залежності:
-
-// npm install express mysql2 axios cors body-parser dotenv
-// ```
-
-// - **express** — для створення API.
-// - **mysql2** — для роботи з MySQL.
-// - **axios** — для запитів до зовнішніх API.
-// - **cors** — для обробки CORS запитів від клієнта.
-// - **dotenv** — для зберігання конфіденційної інформації (наприклад, підключення до БД).
-
-// #### 1.2. Створення простого сервера на Express
-
-// У кореневій папці створіть файл    index.js
-
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const mysql = require("mysql2");
 const axios = require("axios");
+const morgan = require("morgan");
 require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+app.use(morgan("dev"));
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -75,11 +43,51 @@ const fetchPizzasFromExternalAPI = async () => {
 };
 
 app.get("/api/pizzas", async (req, res) => {
-  const { page = 1, category = 0, sort = "rating", order = "desc" } = req.query;
+  console.log("Request received for /api/pizzas");
+
+  // Логування параметрів запиту
+  console.log("Query parameters:", req.query);
+  const {
+    page = 1,
+    category = 0,
+    sort = "rating",
+    order = "desc",
+    search = "",
+  } = req.query;
+
+  // Перетворення page на число і перевірка, що воно не менше 1
+  const pageNumber = Math.max(Number(page), 1); // Гарантуємо, що page >= 1
+  const itemsPerPage = 10; // Кількість елементів на сторінку
+  const offset = (pageNumber - 1) * itemsPerPage; // Обчислюємо зсув
+
+  console.log("Page:", page, "Page Number:", pageNumber);
+
+  console.log(`Page: ${page}, Category: ${category}, Sort: ${sort}, 
+  Order: ${order}, Search: ${search}`);
 
   try {
-    const query = "SELECT * FROM pizzas";
-    db.query(query, async (err, results) => {
+    // Запит для фільтрації за категорією, пошуком і сортуванням
+    let query: string = `SELECT * FROM pizzas WHERE 1=1`; // Базовий запит
+    const queryParams: (number | string)[] = []; // Вказуємо типи для параметрів
+
+    if (category !== 0) {
+      query += ` AND category = ?`;
+      queryParams.push(category);
+    }
+
+    if (search) {
+      query += ` AND title LIKE ?`;
+      queryParams.push(`%${search}%`);
+    }
+
+    query += ` ORDER BY ${sort} ${order} LIMIT ?, ?`;
+
+    console.log("Query:", query);
+
+    queryParams.push(offset, itemsPerPage);
+    console.log("Query parameters for DB:", queryParams);
+
+    db.query(query, queryParams, async (err, results) => {
       if (err) {
         console.error("MySQL Error:", err);
         return res
@@ -88,14 +96,15 @@ app.get("/api/pizzas", async (req, res) => {
       }
 
       if (results.length === 0) {
+        // Якщо даних немає в БД, отримати з зовнішнього API
         const pizzas = await fetchPizzasFromExternalAPI();
 
-        const insertQuery = `
-          INSERT INTO pizzas (title, price, rating, imageUrl, category, sizes, types) 
-          VALUES ?
+        // Збереження нових піц в БД
+        const insertQuery: string = `
+        INSERT INTO pizzas (title, price, rating, imageUrl, category, sizes, types) 
+        VALUES ?
         `;
-
-        const pizzaData = pizzas.map((pizza) => [
+        const pizzaData: any[][] = pizzas.map((pizza) => [
           pizza.title,
           pizza.price,
           pizza.rating,
@@ -105,7 +114,7 @@ app.get("/api/pizzas", async (req, res) => {
           JSON.stringify(pizza.types || []),
         ]);
 
-        db.query(insertQuery, [pizzaData], (err, result) => {
+        db.query(insertQuery, [pizzaData], (err, res) => {
           if (err) {
             console.error("MySQL Error during insert:", err);
             return res
@@ -115,26 +124,58 @@ app.get("/api/pizzas", async (req, res) => {
           return res.json(pizzas);
         });
       } else {
-        const parsedResults = results.map((pizza) => ({
-          ...pizza,
-          sizes:
-            typeof pizza.sizes === "string" && pizza.sizes[0] === "["
-              ? JSON.parse(pizza.sizes) // Якщо це JSON, парсимо
-              : Array.isArray(pizza.sizes) // Якщо це масив, повертаємо як є
-              ? pizza.sizes
-              : typeof pizza.sizes === "string" // Якщо це рядок
-              ? pizza.sizes.split(",").map(Number) // Конвертуємо в масив чисел
-              : [], // В іншому випадку — порожній масив
-          types:
-            typeof pizza.types === "string" && pizza.types[0] === "["
-              ? JSON.parse(pizza.types) // Якщо це JSON, парсимо
-              : Array.isArray(pizza.types) // Якщо це масив, повертаємо як є
-              ? pizza.types
-              : typeof pizza.types === "string" // Якщо це рядок
-              ? pizza.types.split(",").map(Number) // Конвертуємо в масив чисел
-              : [], // В іншому випадку — порожній масив
-        }));
-
+        // 1
+        // Парсинг полів sizes і types перед відправкою
+        // const parsedResults = results.map((pizza) => ({
+        //   ...pizza,
+        //   sizes: pizza.sizes ? JSON.parse(pizza.sizes) : [],
+        //   types: pizza.types ? JSON.parse(pizza.types) : [],
+        // }));
+        // return res.json(parsedResults);
+        // 2
+        // const parsedResults = results.map((pizza) => {
+        //   console.log("Raw pizza data before parsing:", pizza);
+        //   try {
+        //     return {
+        //       ...pizza,
+        //       sizes:
+        //         typeof pizza.sizes === "string" ? JSON.parse(pizza.sizes) : [],
+        //       types:
+        //         typeof pizza.types === "string" ? JSON.parse(pizza.types) : [],
+        //     };
+        //   } catch (error) {
+        //     console.error("Error parsing JSON:", error, "Pizza data:", pizza);
+        //     return {
+        //       ...pizza,
+        //       sizes: [],
+        //       types: [],
+        //     };
+        //   }
+        // });
+        const parsedResults = results.map((pizza) => {
+          console.log("Raw pizza data before parsing:", pizza);
+          try {
+            return {
+              ...pizza,
+              // Перевіряємо, чи `sizes` є рядком, і лише тоді парсимо
+              sizes: Array.isArray(pizza.sizes)
+                ? pizza.sizes
+                : JSON.parse(pizza.sizes),
+              // Перевіряємо, чи `types` є рядком, і лише тоді парсимо
+              types: Array.isArray(pizza.types)
+                ? pizza.types
+                : JSON.parse(pizza.types),
+            };
+          } catch (error) {
+            console.error("Error parsing JSON:", error, "Pizza data:", pizza);
+            return {
+              ...pizza,
+              sizes: [],
+              types: [],
+            };
+          }
+        });
+        // Додайте цей рядок для повернення результатів на фронтенд:
         return res.json(parsedResults);
       }
     });
@@ -147,6 +188,40 @@ app.get("/api/pizzas", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
+
+// 1 варіант
+// Щоб створити бекенд на **Node.js** для вашої програми, яка буде працювати з базою даних **MySQL** і отримувати часткові дані з іншого API, ми можемо розділити задачу на наступні етапи:
+
+// 1. **Node.js + Express для створення API**.
+// 2. **MySQL** для зберігання і часткового заповнення даних.
+// 3. **Запит до зовнішнього API** для отримання додаткових даних про піци.
+// 4. **Робота з базою даних** через MySQL (або Sequelize для ORM).
+// 5. **Інтеграція з фронтендом** (React).
+
+// ### Крок 1: Налаштування Node.js сервера
+
+// #### 1.1. Встановлення Node.js і створення проекту
+// Створіть новий проект Node.js:
+
+// mkdir pizza-backend
+// cd pizza-backend
+// npm init -y
+// ```
+
+// Додайте необхідні залежності:
+
+// npm install express mysql2 axios cors body-parser dotenv
+// ```
+
+// - **express** — для створення API.
+// - **mysql2** — для роботи з MySQL.
+// - **axios** — для запитів до зовнішніх API.
+// - **cors** — для обробки CORS запитів від клієнта.
+// - **dotenv** — для зберігання конфіденційної інформації (наприклад, підключення до БД).
+
+// #### 1.2. Створення простого сервера на Express
+
+// У кореневій папці створіть файл    index.js
 
 // Після налаштування tsconfig.json, ви можете скомпілювати ваш проект за допомогою:
 
@@ -166,3 +241,15 @@ app.listen(PORT, () => {
 // Використовується JSON.stringify для перетворення масивів sizes та types у JSON-формат, що дозволяє вам зберігати їх у базі даних.
 // Вам не потрібно включати поле id у ваш запит на вставку, оскільки MySQL автоматично генерує його.
 // Спробуйте цей код, і він повинен вирішити вашу проблему.
+
+// 2
+// Що змінилося:
+// Типи даних:
+// Додано типи для itemsPerPage, offset, query, queryParams, та pizzaData, щоб TypeScript знав, з чим працює.
+// Вказано тип (number | string)[] для queryParams, що дозволяє передавати як числа, так і рядки.
+// Для pizzaData встановлено тип any[][], оскільки ми не знаємо структури об'єкта pizza.
+// Пояснення помилок
+// "Аргумент типа 'any' нельзя назначить параметру типа 'never'": Це означає, що TypeScript не зміг визначити типи
+// аргументів у вашому масиві queryParams, що призвело до того, що він не може обробити їх.
+// "Аргумент типа 'string' нельзя назначить параметру типа 'never'": Це вказує на те, що TypeScript не знає, якого
+// типу дані передаються в м
