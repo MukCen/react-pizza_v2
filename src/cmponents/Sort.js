@@ -9,12 +9,12 @@ function Sort({ value, onChengPopap }) {
   // Мемоізація масиву сортування
   const sortPopaps = useMemo(
     () => [
-      { name: "популярності", sortProperty: "rating desc", sort: "desc" },
-      { name: "популярності", sortProperty: "rating asc", sort: "asc" },
-      { name: "ціні", sortProperty: "price desc", sort: "desc" },
-      { name: "ціні", sortProperty: "price asc", sort: "asc" },
-      { name: "алфавіту", sortProperty: "title desc", sort: "desc" },
-      { name: "алфавіту", sortProperty: "title asc", sort: "asc" },
+      { name: "популярності", sortProperty: "rating", sort: "desc" },
+      { name: "популярності", sortProperty: "rating", sort: "asc" },
+      { name: "ціні", sortProperty: "price", sort: "desc" },
+      { name: "ціні", sortProperty: "price", sort: "asc" },
+      { name: "алфавіту", sortProperty: "title", sort: "desc" },
+      { name: "алфавіту", sortProperty: "title", sort: "asc" },
     ],
     []
   );

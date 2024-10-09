@@ -34,6 +34,7 @@ function HomePage({ searchValue, setCount }) {
     )
       .then((res) => res.json())
       .then((data) => {
+        console.log("Fetched pizzas:", data); // Додайте цей рядок
         setItems(data);
         setLoudet(false);
       })
