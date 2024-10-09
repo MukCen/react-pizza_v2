@@ -6,6 +6,18 @@
   margin-bottom: 65px;
   transition: all 0.2s ease-in-out;
 
+  .pizza-block__rating svg {
+    transition: fill 0.2s ease;
+  }
+
+  .pizza-block__rating svg:hover {
+    fill: gold;
+  }
+
+  .pizza-block__rating .active {
+    fill: gold;
+  }
+
   &:hover {
     transform: scale(1.03);
   }
