@@ -1,0 +1,22 @@
+{
+  "scripts": {
+    "start": "concurrently \"npm run start:react-pizza_v2\" \"npm run start:pizza-backend-node\"",
+    "start:react-pizza_v2": "cd react-pizza_v2 && npm start",
+    "start:pizza-backend-node": "cd pizza-backend-node && npm start",
+    "push:client": "cd react-pizza_v2 && git add . && git commit -m \"Frontend changes\" && git push origin Client",
+    "push:server": "cd pizza-backend-node && git add . && git commit -m \"Backend changes\" && git push origin Server",
+    "push:all": "npm run push:client && npm run push:server",
+    "install:client": "cd react-pizza_v2 && npm install",
+    "install:server": "cd pizza-backend-node && npm install",
+    "install:all": "npm run install:client && npm run install:server",
+    "branch:client": "cd react-pizza_v2 && git checkout -b ",
+    "branch:server": "cd pizza-backend-node && git checkout -b ",
+    "branch:all": "npm run branch:client && npm run branch:server",
+    "commit:client": "cd react-pizza_v2 && git add . && git commit -m ",
+    "commit:server": "cd pizza-backend-node && git add . && git commit -m ",
+    "commit:all": "npm run commit:client -- \"\" && npm run commit:server -- \"\""
+  },
+  "devDependencies": {
+    "concurrently": "^6.5.1"
+  }
+}
